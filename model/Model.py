@@ -14,22 +14,29 @@ class Model(nn.Module):
         super(Model, self).__init__()
         self.flatten = nn.Flatten()
 
+        self.conv_stack = nn.Sequential(
+            nn.Conv1d(1, 32, kernel_size=3, stride=1, padding=1),
+            nn.Tanh(),
+            nn.MaxPool1d(kernel_size=2, stride=2),
+            nn.Conv1d(32, 64, kernel_size=3, stride=1, padding=1),
+            nn.Tanh(),
+            nn.MaxPool1d(kernel_size=2, stride=2)
+        )
+
         self.linear_tanh_stack = nn.Sequential(
-            nn.Linear(15, 64),
-            nn.Tanh(),
-            nn.Linear(64, 128),
-            nn.Tanh(),
-            nn.Linear(128, 256),
-            nn.Tanh(),
-            nn.Linear(256, 144)
+            nn.Linear(64 * (15 // 4), 128),
+            nn.PReLU(),
+            nn.Linear(128, 114),
         )
 
         self.to(get_device())
 
     def forward(self, x):
-        x = self.flatten(x)
-        logits = self.linear_tanh_stack(x)
-        return logits
+        x = x.unsqueeze(1)
+        x = self.conv_stack(x)
+        x = x.view(x.size(0), -1)
+        x = self.linear_tanh_stack(x)
+        return x
 
 
 def train_loop(dataloader: DataLoader, model: nn.Module, loss_fn: nn.CrossEntropyLoss, optimizer: optim.Adam):
@@ -82,7 +89,7 @@ if __name__ == "__main__":
 
     model = Model()
     loss_fn = nn.CrossEntropyLoss().to(get_device())
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=0.01)
 
     for epoch in range(num_epochs):
         print(f"Epoch {epoch + 1}")
