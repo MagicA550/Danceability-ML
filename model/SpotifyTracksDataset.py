@@ -1,9 +1,9 @@
-import pandas as pd
+from os.path import dirname, realpath
 
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
 from torch.utils.data import Dataset, DataLoader, random_split
 from torchvision import transforms
-
-from sklearn.preprocessing import MinMaxScaler
 
 from model.transforms.DataFrameToTensor import DataFrameToTensor
 from model.transforms.ToLowerCase import ToLowerCase
@@ -54,7 +54,7 @@ class SpotifyTracksDataset(Dataset):
         return song, label
 
 
-dataset = SpotifyTracksDataset(csv_file="data/dataset.csv",
+dataset = SpotifyTracksDataset(csv_file=f"{dirname(realpath(__file__))}/data/dataset.csv",
                                transform=DataFrameToTensor(),
                                target_transform=transforms.Compose([ToLowerCase(), ToNumericGenre()]))
 
