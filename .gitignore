@@ -162,3 +162,6 @@ cython_debug/
 # Ignore dataset and model - distribute dataset via README
 model/data/dataset.csv
 model/data/model.pth
+
+# local environment variables
+.env.local
