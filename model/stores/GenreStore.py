@@ -1,3 +1,6 @@
+import numpy as np
+import pandas as pd
+
 from typing import List
 
 
@@ -7,13 +10,15 @@ class GenreStore:
     genres: List[str] = []
     """ A List containing the genres added to the store; the index is their unique identifier. """
 
-    def add(self, genre: str) -> int:
-        """ Adds the genre to the store if it hasn't already, returning its new identifier. """
-        if genre in self:
-            return self.genres.index(genre)
+    def __init__(self, csv_file: str):
+        file = pd.read_csv(csv_file)
 
-        self.genres.append(genre)
-        return len(self.genres) - 1
+        for genre in sorted(np.unique(file["track_genre"])):
+            self.genres.append(str(genre).lower())
+
+    def get(self, genre: str) -> int:
+        """ Gets the identifier of a genre. """
+        return self.genres.index(genre)
 
     def __getitem__(self, idx: int) -> str:
         """ Returns the genre with the identifier given. """
