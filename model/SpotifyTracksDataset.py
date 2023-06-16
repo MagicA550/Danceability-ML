@@ -19,9 +19,12 @@ class SpotifyTracksDataset(Dataset):
         "album_name",
         "track_name",
         "track_genre",
-        "index"
+        "index",
     ]
     """ A list of features to be ignored by the Dataset. """
+
+    scaler = MinMaxScaler()
+    """ An instance of the `MinMaxScaler`. """
 
     def __init__(self, csv_file, transform=None, target_transform=None):
         file = pd.read_csv(csv_file)
@@ -31,8 +34,11 @@ class SpotifyTracksDataset(Dataset):
         self.song_labels = file["track_genre"]
         self.song_features = file.loc[:, list(desired_features)]
 
+        # Alphabetically sort the columns, so they're in the same order every time.
+        self.song_features = self.song_features[sorted(self.song_features.columns)]
+
         # Scale each column to be within the range [0, 1].
-        self.song_features = pd.DataFrame(MinMaxScaler().fit_transform(self.song_features),
+        self.song_features = pd.DataFrame(self.scaler.fit_transform(self.song_features),
                                           columns=self.song_features.columns)
 
         self.transform = transform
@@ -63,3 +69,15 @@ train_set, test_set = random_split(dataset, [76000, 38000])
 
 train_dataloader = DataLoader(train_set, batch_size=760, shuffle=True)
 test_dataloader = DataLoader(test_set, batch_size=380, shuffle=False)
+
+if __name__ == "__main__":
+    print(
+        "--- Using 🎹 Spotify Tracks Dataset: https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset "
+        "--- \n")
+    print(f"There are {len(dataset.song_features.columns)} columns:")
+
+    for index, column in enumerate(dataset.song_features.columns):
+        print(f" - {column}")
+
+    print(f"\nTraining Data - size of {len(train_set)}, batch size of {train_dataloader.batch_size}")
+    print(f"Test Data - size of {len(test_set)}, batch size of {test_dataloader.batch_size}")
