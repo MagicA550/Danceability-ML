@@ -4,7 +4,7 @@ from torch import optim
 from torch.utils.data import DataLoader
 
 from model.Device import get_device
-from model.SpotifyTracksDataset import train_dataloader, test_dataloader
+from model.SpotifyTracksDataset import train_dataloader, test_dataloader, dataset
 
 
 class Model(nn.Module):
@@ -24,12 +24,13 @@ class Model(nn.Module):
         )
 
         self.linear_tanh_stack = nn.Sequential(
-            nn.Linear(64 * (15 // 4), 128),
+            nn.Linear(64 * (len(dataset.song_features.columns) // 4), 128),
             nn.PReLU(),
             nn.Linear(128, 114),
         )
 
-        self.to(get_device())
+        self.device = get_device()
+        self.to(self.device)
 
     def forward(self, x):
         x = x.unsqueeze(1)
