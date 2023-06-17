@@ -1,9 +1,8 @@
-import torch
-
 from flask import Flask
 from flask_cors import CORS, cross_origin
 
-from model.Model import Model
+from api.endpoints.Genre import genre_blueprint
+from api.endpoints.Genres import genres_blueprint
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -17,8 +16,7 @@ def root():
 
 
 if __name__ == "__main__":
-    model = Model()
-    model.load_state_dict(torch.load("model/data/model.pth"))
-    model.eval()
+    app.register_blueprint(genre_blueprint)
+    app.register_blueprint(genres_blueprint)
 
     app.run(debug=True)
