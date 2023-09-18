@@ -41,7 +41,7 @@ class Model(nn.Module):
 
 
 def train_loop(dataloader: DataLoader, model: nn.Module, loss_fn: nn.CrossEntropyLoss, optimizer: optim.Adam):
-    """ Completes an epoch of training on the model using the given DataLoader, loss function and optimizer. """
+    """ Completes a loop of training on the model using the given DataLoader, loss function and optimizer. """
 
     size = len(dataloader.dataset)
     model.train()
@@ -62,7 +62,7 @@ def train_loop(dataloader: DataLoader, model: nn.Module, loss_fn: nn.CrossEntrop
 
 
 def test_loop(dataloader: DataLoader, model: nn.Module, loss_fn: nn.CrossEntropyLoss):
-    """ Completes a testing epoch on the model using the given DataLoader and loss function. """
+    """ Completes a testing loop on the model using the given DataLoader and loss function. """
 
     model.eval()
     total_loss, total_correct, total_samples = 0.0, 0, 0
