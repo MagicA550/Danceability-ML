@@ -23,7 +23,7 @@ class Model(nn.Module):
             nn.MaxPool1d(kernel_size=2, stride=2)
         )
 
-        self.linear_tanh_stack = nn.Sequential(
+        self.linear_prelu_stack = nn.Sequential(
             nn.Linear(64 * (len(dataset.song_features.columns) // 4), 128),
             nn.PReLU(),
             nn.Linear(128, 114),
@@ -36,7 +36,7 @@ class Model(nn.Module):
         x = x.unsqueeze(1)
         x = self.conv_stack(x)
         x = x.view(x.size(0), -1)
-        x = self.linear_tanh_stack(x)
+        x = self.linear_prelu_stack(x)
         return x
 
 

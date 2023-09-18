@@ -23,13 +23,3 @@ class Environment:
     def __getitem__(self, var: str):
         """ Returns the environment variable using the key provided, or None if it doesn't exist. """
         return self._environment[var]
-
-    @property
-    def spotify_client_id(self) -> str:
-        """ The Spotify API client id. """
-        return self["SPOTIFY_CLIENT_ID"]
-
-    @property
-    def spotify_client_secret(self) -> str:
-        """ The Spotify API client secret. """
-        return self["SPOTIFY_CLIENT_SECRET"]

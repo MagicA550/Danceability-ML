@@ -20,6 +20,7 @@ class SpotifyTracksDataset(Dataset):
         "track_name",
         "track_genre",
         "index",
+        "Unnamed: 0"
     ]
     """ A list of features to be ignored by the Dataset. """
 
